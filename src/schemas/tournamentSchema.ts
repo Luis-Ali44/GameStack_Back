@@ -4,8 +4,8 @@ export const createTournamentSchema = z.object({
   game_id: z.number().int().positive('El ID del juego es obligatorio'),
   name: z.string().min(3, 'El nombre debe tener al menos 3 caracteres').max(150),
   description: z.string().optional(),
-  type: z.enum(['single', 'double', 'round_robin'], {
-    errorMap: () => ({ message: 'El tipo debe ser single, double o round_robin' })
+type: z.enum(['single', 'double', 'round_robin'] as const, {
+    message: 'El tipo de torneo es obligatorio y debe ser single, double o round_robin',
   }),
   max_participants: z.number().int().min(4, 'Mínimo 4 participantes para un torneo'),
   rules: z.string().optional(),
