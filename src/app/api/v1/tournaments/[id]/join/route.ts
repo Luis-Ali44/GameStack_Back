@@ -12,7 +12,7 @@ export async function POST(
     if (isNaN(tournamentId)) {
       return NextResponse.json({ error: 'ID de torneo inválido' }, { status: 400 });
     }
-
+//solo para commit
     const authHeader = req.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
