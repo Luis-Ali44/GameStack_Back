@@ -1,15 +1,10 @@
-import Image from 'next/image';
+export const dynamic = 'force-dynamic'; // <-- ESTA LÍNEA APAGA EL PRERENDER ESTÁTICO
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <main>
-      <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-        <Image src="/consola.png" alt="Mando de juego" width={50} height={50} /> 
-        <h3>Game Hub</h3>
-      </div>
-      
-     <h2>Bienvenido a GameCenter</h2>
-     <p>Tu paltaforma para gestionar partidas, torneos y compartir tu conocimiento.</p>
+    <main style={{ padding: '2rem', fontFamily: 'system-ui, sans-serif' }}>
+      <h1>🟢 API de GameHub en línea</h1>
+      <p>El servidor está funcionando correctamente.</p>
     </main>
   );
 }
