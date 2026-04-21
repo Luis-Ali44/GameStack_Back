@@ -10,6 +10,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
 
+    #comentar para pushear
     const token = authHeader.split(' ')[1];
     const decodedUser = verifyToken(token);
 
