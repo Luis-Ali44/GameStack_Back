@@ -4,12 +4,14 @@ import { verifyToken } from '@/lib/jwt';
 
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const client = await pool.connect();
 
   try {
-    const tournamentId = parseInt(params.id, 10);
+    const { id } = await params;
+    const tournamentId = parseInt(id, 10);
+
     
     const authHeader = req.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {

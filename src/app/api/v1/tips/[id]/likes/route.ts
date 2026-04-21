@@ -4,17 +4,17 @@ import { verifyToken } from '@/lib/jwt';
 
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const client = await pool.connect();
 
   try {
-    const tipId = parseInt(params.id, 10);
+    const { id } = await params;
+    const tipId = parseInt(id, 10);
     if (isNaN(tipId)) {
       return NextResponse.json({ error: 'ID de tip inválido' }, { status: 400 });
     }
 
-    // 1. Verificación de Seguridad
     const authHeader = req.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
@@ -28,14 +28,12 @@ export async function POST(
 
     await client.query('BEGIN');
 
-    // 2. Verificar que el tip exista
     const tipCheck = await client.query('SELECT id FROM tips WHERE id = $1', [tipId]);
     if (tipCheck.rows.length === 0) {
       await client.query('ROLLBACK');
       return NextResponse.json({ error: 'El tip no existe' }, { status: 404 });
     }
 
-    // 3. Verificar si el usuario ya le dio like a este tip
     const likeCheck = await client.query(
       'SELECT id FROM tip_likes WHERE tip_id = $1 AND user_id = $2',
       [tipId, decodedUser.id]
@@ -44,12 +42,10 @@ export async function POST(
     let action = '';
 
     if (likeCheck.rows.length > 0) {
-      // Si ya existe el like, lo quitamos (Unlike)
       await client.query('DELETE FROM tip_likes WHERE id = $1', [likeCheck.rows[0].id]);
       await client.query('UPDATE tips SET likes_count = likes_count - 1 WHERE id = $1', [tipId]);
       action = 'unliked';
     } else {
-      // Si no existe, lo agregamos (Like)
       await client.query(
         'INSERT INTO tip_likes (tip_id, user_id) VALUES ($1, $2)',
         [tipId, decodedUser.id]
