@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GameHub API - Backend Platform
 
-## Getting Started
+## 1. Descripción del Proyecto
+GameHub es una plataforma backend diseñada para centralizar la gestión de torneos de E-Sports y videojuegos. Permite el registro de usuarios, autenticación segura, vinculación con cuentas de Riot Games, búsqueda de videojuegos mediante integración de APIs externas y un sistema automatizado de *matchmaking* (generación de llaves) para torneos.
 
-First, run the development server:
+## 2. Arquitectura del Sistema
+El proyecto está construido bajo una arquitectura de **API RESTful** pura (sin frontend acoplado) utilizando las siguientes tecnologías:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+* **Framework:** Next.js 14 (App Router) en modo exclusivamente servidor (API Routes).
+* **Lenguaje:** TypeScript, garantizando tipado estático y seguridad en el código.
+* **Base de Datos:** PostgreSQL, alojada en Supabase y conectada mediante Connection Pooling (puerto 6543) para soportar entornos serverless.
+* **Autenticación:** JSON Web Tokens (JWT) para la protección de rutas privadas.
+* **Despliegue:** Vercel (Arquitectura Serverless).
+* **Estructura de Carpetas:** Basada en principios de separación de responsabilidades:
+  * `/src/app/api`: Controladores y enrutamiento.
+  * `/src/config`: Conexión a la base de datos.
+  * `/src/lib`: Utilidades como generación y verificación de JWT.
+  * `/src/services`: Lógica de negocio e integración con APIs de terceros (RAWG, Riot Games).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 3. Variables de Entorno Necesarias
+Para reproducir este proyecto de manera local, es necesario crear un archivo `.env` en la raíz del proyecto con la siguiente estructura:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```env
+# Configuración del servidor
+NODE_ENV=development
+PORT=3000
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Base de datos (Supabase Transaction Pooler)
+DATABASE_URL="postgresql://usuario:password@host:6543/postgres"
 
-## Learn More
+# Autenticación
+JWT_SECRET="tu_secreto_super_seguro"
+JWT_EXPIRES_IN="7d"
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# APIs de Terceros
+RAWG_API_KEY="tu_api_key_de_rawg"
+RIOT_API_KEY="tu_api_key_de_riot_games"
